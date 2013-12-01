@@ -11,4 +11,4 @@ hdload:
 	jne loaderror
 	ret
 loaderror:
-	jmp $
+	jump $
