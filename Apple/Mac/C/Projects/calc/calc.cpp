@@ -1,0 +1,94 @@
+
+#include <iostream>
+using namespace std;
+
+char prompt(char& a)
+{
+	cout << "Yes, master (asdm)? ";
+	cin >> a;
+	return a;
+}
+
+int math(char& c)
+{
+	int q;
+	float t(0);
+	cout <<"You have selected ";
+	if (c=='a'){
+		cout << "addition. How many numbers would you like to add? ";
+		cin >> q;
+		float * field;
+		field=new float [q];
+		for (int c(q); c!=0; c--){
+			cout << "Number " << c << ": ";
+			cin >> field[c];
+			t=field[c]+t;
+			cout << t << ". ";
+		}
+		int c(0);
+		return c;
+	}
+	else if (c=='s'){
+		cout << "subtraction. "; 
+		float field [2];
+		field [1]=0;
+		field [2]=0;
+		cout << "Number 1: ";
+		cin >> field[1];
+		cout << field[1];
+		cout << ". ";
+		cout << "Number 2: ";
+		cin >> field[2];
+		cout << field[1]-field[2];
+		cout << ". ";
+		int c(0);
+		return c;
+	}
+	else if (c=='d'){
+		cout << "division. ";
+		float field [2];
+		field [1]=0;
+		field [2]=0;
+		cout << "Number 1: ";
+		cin >> field[1];
+		cout << field[1];
+		cout << ". ";
+		cout << "Number 2: ";
+		cin >> field[2];
+		cout << field[1]/field[2];
+		cout << ". ";
+		int c(0);
+		return c;
+	}
+	else if (c=='m'){
+		float t(1);
+		cout << "multiplication. How many numbers would you like to multiply? ";
+		cin >> q;
+		float * field;
+		field=new float [q];
+		for (int c(q); c!=0; c--){
+			cout << "Number " << c << ": ";
+			cin >> field[c];
+			t=field[c]*t;
+			cout << t << ". ";
+		}
+		int c(0);
+		return c;
+	}
+	else if (c=='q'){
+		cout << "q. Quitting the application...";
+		return 0;
+	}
+	else{
+		cout << "ERROR: UNKNOWN CHARACTER";
+		int c(1);
+		return c;
+	}
+}
+int main()
+{
+	char c;
+	prompt (c);
+	math(c);
+	return c;
+}
