@@ -11,4 +11,8 @@ hdload:
 	jne loaderror
 	ret
 loaderror:
+	mov al, ERRORLOAD
+	call printstr
 	jmp $
+ERRORLOAD db "Disk load error...", 0
+%include "printstr.asm"

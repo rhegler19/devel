@@ -11,4 +11,7 @@ hdload:
 	jne loaderror
 	ret
 loaderror:
-	jump $
+	mov al, ERRORLOAD
+	call printstr
+	jmp $
+ERRORLOAD db "Disk load error...", 0
