@@ -1,68 +1,52 @@
 ; ------------------------------------------------------------------------
-; PolyOS boot loader code            (c)1997 Jeff Weeks of Code X Software
+; \ \/ /   .'    '.    / ___|
+;  \  /    | .''. |    \ \__
+;  |  |    | '..' |     \__ \
+;  /  \    |      |    ___/ /
+; / /\ \   '.    .'   |    / 
 ; ------------------------------------------------------------------------
-; This little bit of assembly is the boot loader for my operating system.
-; ------------------------------------------------------------------------
-
-[BITS 16]       ; the bios starts out in 16-bit real mode
+Based on PolyOS, which is (c)1997 Jeff Weeks of Code X Software.
+[BITS 16]
 [ORG 0]
 
-; ------------------------------------------------------------------------
-; SECTOR ONE: THE BOOT LOADER
-; ------------------------------------------------------------------------
-; This sector detects your processor.  If a 386 is found, it loads the
-; kernel from the disk and executes it (atleast it will in the future :).
-; ------------------------------------------------------------------------
+;JUMP
 
-jmp start       ; skip over our data and functions
+jmp start
 
-; -------------------------------------
-; Data used in the boot-loading process
-; ------------------------------------------------------------------------
+;DATA
+
         bootdrv         db 0
         bootmsg         db 'Booting PolyOS (c)1997 Cipher of Code X',13,10,0
         loadmsg         db 'Loading kernel',13,10,0
         jumpmsg         db 'Jumping to kernel',13,10,0
         rebootmsg       db 'Press any key to reboot',13,10,0
-
-        ; these are used in the processor identification
         processormsg    db 'Checking for 386+ processor: ',0
         need386         db 'Sorry... 386+ required!',13,10,0
         found386        db 'Excellent!',13,10,0
-
-        ; these are used when entering protected mode
         a20msg          db 'Setting A20 address line',13,10,0
         pmodemsg        db 'Setting CR0 -> Entering PMode',13,10,0
+        pIDT            dw 7FFh         ; IDT slots
+                        dd 0000h        ; from 0000
+        pGDT            dw 17FFh        ; GDT slots
+                        dd 0800h        ; right after the IDT
 
-        ; Here's the locations of my IDT and GDT.  Remember, Intel's are
-        ; little endian processors, therefore, these are in reversed order.
-        ; Also note that lidt and lgdt accept a 32-bit address and 16-bit 
-        ; limit, therefore, these are 48-bit variables.
-        pIDT            dw 7FFh         ; limit of 256 IDT slots
-                        dd 0000h        ; starting at 0000
+;FUNCTIONS
 
-        pGDT            dw 17FFh        ; limit of 768 GDT slots
-                        dd 0800h        ; starting at 0800h (after IDT)
-
-; ------------------------------------------
-; Functions used in the boot-loading process
-; ------------------------------------------------------------------------
         detect_cpu:
-                mov si, processormsg    ; tell the user what we're doing
+                mov si, processormsg    ;print
                 call message
-
-                ; test if 8088/8086 is present (flag bits 12-15 will be set)
-                pushf                   ; save the flags original value
+                ;TEST FOR i386
+                pushf                   ; push all the flags onto stack
                 
                 xor ah,ah               ; ah = 0
                 push ax                 ; copy ax into the flags
-                popf                    ; with bits 12-15 clear
+                popf                    
                 
-                pushf                   ; Read flags back into ax
+                pushf                   
                 pop ax       
-                and ah,0f0h             ; check if bits 12-15 are set
+                and ah,0f0h             ; if 12-15 are set, no i386
                 cmp ah,0f0h
-                je no386                ; no 386 detected (8088/8086 present)
+                je no386                
 
                 ; check for a 286 (bits 12-15 are clear)
                 mov ah,0f0h             ; set bits 12-15
