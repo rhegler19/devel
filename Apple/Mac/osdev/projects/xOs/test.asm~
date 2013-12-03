@@ -1,0 +1,4 @@
+%include "printstr.asm"
+mov al, [msg] 
+call printstr
+msg db "Hello", 0
